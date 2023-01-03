@@ -303,7 +303,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             if (mediaPlayer!!.isPlaying) {
                 pause()
             } else {
-                start()
+                play()
             }
         }
 
@@ -313,6 +313,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
         binding.imageButton.setOnTouchListener(AnimationTouchListener())
+
+        binding.imageButton.isEnabled = false
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
@@ -335,9 +337,11 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             }
 
             override fun onStopTrackingTouch(p0: SeekBar?) {
-                start()
+                play()
             }
         })
+
+        binding.seekBar.isEnabled = false
 
         myRunnable = Runnable {
 
@@ -428,34 +432,36 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         this.onPreparedListener = onPreparedListener
     }
 
-    fun setDataSource(dataSource: String) {
+    fun prepare(dataSource: String, startOnPrepared: Boolean) {
+
         this.dataSource = dataSource
-        onDataSourceListener?.invoke(dataSource)
+
         mediaPlayer = MediaPlayer()
+
         mediaPlayer!!.setDataSource(dataSource)
-    }
-
-    fun prepare(startOnPrepared: Boolean) {
-
-        if (mediaPlayer == null) {
-            return
-        }
 
         mediaPlayer!!.prepareAsync()
 
         mediaPlayer!!.setOnPreparedListener {
 
-            onPreparedListener?.invoke(it)
+            binding.imageButton.isEnabled = true
+            binding.seekBar.isEnabled = true
 
             mediaPlayerPrepared = true
+            currentPosition = 0
+
+            binding.imageButton.setImageResource(R.drawable.ic_round_play_arrow_24)
 
             val progress = makeTimeString(context, currentPosition.toLong())
             val duration = makeTimeString(context, mediaPlayer!!.duration.toLong())
             binding.textView.text = context.getString(R.string.progress_duration, progress, duration)
 
             binding.seekBar.max = mediaPlayer!!.duration
+            binding.seekBar.progress = 0
 
-            if (startOnPrepared) start()
+            if (startOnPrepared) {
+                play()
+            }
         }
 
         mediaPlayer!!.setOnCompletionListener {
@@ -464,7 +470,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             myHandler.removeCallbacks(myRunnable)
 
-            val progress = makeTimeString(context, 0)
+            val progress = makeTimeString(context, currentPosition.toLong())
             val duration = makeTimeString(context, mediaPlayer!!.duration.toLong())
             binding.textView.text = context.getString(R.string.progress_duration, progress, duration)
 
@@ -474,17 +480,17 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    fun start() {
+    fun play() {
 
         if (mediaPlayer == null) {
             return
         }
 
-        if (mediaPlayer!!.isPlaying) {
+        if (!mediaPlayerPrepared) {
             return
         }
 
-        if (!mediaPlayerPrepared) {
+        if (mediaPlayer!!.isPlaying) {
             return
         }
 
@@ -499,8 +505,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         if (canStart) {
 
-            mediaPlayer!!.start()
             mediaPlayer!!.seekTo(currentPosition)
+            mediaPlayer!!.start()
 
             myHandler.post(myRunnable)
 
@@ -514,11 +520,11 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             return
         }
 
-        if (!mediaPlayer!!.isPlaying) {
+        if (!mediaPlayerPrepared) {
             return
         }
 
-        if (!mediaPlayerPrepared) {
+        if (!mediaPlayer!!.isPlaying) {
             return
         }
 
@@ -537,19 +543,23 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
         currentPosition = 0
-
-        mediaPlayer!!.release()
         mediaPlayerPrepared = false
+        mediaPlayer!!.release()
 
         myHandler.removeCallbacks(myRunnable)
 
-        val progress = makeTimeString(context, 0)
-        val duration = makeTimeString(context, 0)
-        binding.textView.text = context.getString(R.string.progress_duration, progress, duration)
-
+        binding.imageButton.isEnabled = false
         binding.imageButton.setImageResource(R.drawable.ic_round_play_arrow_24)
 
+        val progressString = makeTimeString(context, 0)
+        val durationString = makeTimeString(context, 0)
+        binding.textView.text = context.getString(R.string.progress_duration, progressString, durationString)
+
+        binding.seekBar.isEnabled = false
+        binding.seekBar.max = 0
         binding.seekBar.progress = 0
+
+        mediaPlayer = null
     }
 
     private fun intToScaleType(i: Int): ImageView.ScaleType {
@@ -645,7 +655,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         return if (hours > 0) context.getString(R.string.hours_minutes_seconds, hours, minutes, seconds) else context.getString(R.string.minutes_seconds, minutes, seconds)
     }
 
-    class AnimationTouchListener : View.OnTouchListener {
+    class AnimationTouchListener : OnTouchListener {
 
         var scaleX = 0.90f
         var scaleY = 0.90f
