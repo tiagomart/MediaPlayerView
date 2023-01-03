@@ -275,16 +275,15 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
                 when (focusChange) {
 
                     AudioManager.AUDIOFOCUS_GAIN -> {
-                        mediaPlayer!!.start()
+                        play()
                     }
 
                     AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                        mediaPlayer!!.pause()
-                        mediaPlayer!!.seekTo(0)
+                        pause()
                     }
 
                     AudioManager.AUDIOFOCUS_LOSS -> {
-                        mediaPlayer!!.release()
+                        release()
                     }
                 }
             }
