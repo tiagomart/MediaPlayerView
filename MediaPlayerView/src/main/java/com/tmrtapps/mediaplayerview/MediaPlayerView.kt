@@ -229,25 +229,25 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             }
         }
 
-    var onPlay: (() -> Unit)? = null
+    private var onPlayListener: (() -> Unit)? = null
 
-    var onPause: (() -> Unit)? = null
+    private var onPauseListener: (() -> Unit)? = null
 
-    var onRelease: (() -> Unit)? = null
+    private var onReleaseListener: (() -> Unit)? = null
 
-    var onButtonClickListener: ((view: View) -> Unit)? = null
+    private var onButtonClickListener: ((view: View) -> Unit)? = null
 
-    var onButtonLongClickListener: ((view: View) -> Unit)? = null
+    private var onButtonLongClickListener: ((view: View) -> Unit)? = null
 
-    var onPreparedListener: ((mediaPlayer: MediaPlayer) -> Unit)? = null
+    private var onPreparedListener: ((mediaPlayer: MediaPlayer) -> Unit)? = null
 
-    var onCompletionListener: ((mediaPlayer: MediaPlayer) -> Unit)? = null
+    private var onCompletionListener: ((mediaPlayer: MediaPlayer) -> Unit)? = null
 
-    var onSeekBarStartTrackingTouch: ((seekBar: SeekBar?) -> Unit)? = null
+    private var onSeekBarStartTrackingTouchListener: ((seekBar: SeekBar?) -> Unit)? = null
 
-    var onSeekBarProgressChanged: ((seekBar: SeekBar?, progress: Int, fromUser: Boolean) -> Unit)? = null
+    private var onSeekBarProgressChangedListener: ((seekBar: SeekBar?, progress: Int, fromUser: Boolean) -> Unit)? = null
 
-    var onSeekBarStopTrackingTouch: ((seekBar: SeekBar?) -> Unit)? = null
+    private var onSeekBarStopTrackingTouchListener: ((seekBar: SeekBar?) -> Unit)? = null
 
     private val binding = MediaPlayerBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -343,7 +343,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 pause()
-                onSeekBarStartTrackingTouch?.invoke(seekBar)
+                onSeekBarStartTrackingTouchListener?.invoke(seekBar)
             }
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -359,12 +359,12 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
                     }
                 }
 
-                onSeekBarProgressChanged?.invoke(seekBar, progress, fromUser)
+                onSeekBarProgressChangedListener?.invoke(seekBar, progress, fromUser)
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 play()
-                onSeekBarStopTrackingTouch?.invoke(seekBar)
+                onSeekBarStopTrackingTouchListener?.invoke(seekBar)
             }
         })
 
@@ -527,7 +527,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             binding.imageButton.setImageResource(R.drawable.ic_round_pause_24)
 
-            onPlay?.invoke()
+            onPlayListener?.invoke()
         }
     }
 
@@ -552,7 +552,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.imageButton.setImageResource(R.drawable.ic_round_play_arrow_24)
 
-        onPause?.invoke()
+        onPauseListener?.invoke()
     }
 
     fun release() {
@@ -580,7 +580,47 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         mediaPlayer = null
 
-        onRelease?.invoke()
+        onReleaseListener?.invoke()
+    }
+
+    fun setOnPlayListener(onPlayListener: (() -> Unit)?) {
+        this.onPlayListener = onPlayListener
+    }
+
+    fun setOnPauseListener(onPauseListener: (() -> Unit)?) {
+        this.onPauseListener = onPauseListener
+    }
+
+    fun setOnReleaseListener(onReleaseListener: (() -> Unit)?) {
+        this.onReleaseListener = onReleaseListener
+    }
+
+    fun setOnButtonClickListener(onButtonClickListener: ((view: View) -> Unit)?) {
+        this.onButtonClickListener = onButtonClickListener
+    }
+
+    fun setOnButtonLongClickListener(onButtonLongClickListener: ((view: View) -> Unit)?) {
+        this.onButtonLongClickListener = onButtonLongClickListener
+    }
+
+    fun setOnPreparedListener(onPreparedListener: ((mediaPlayer: MediaPlayer) -> Unit)?) {
+        this.onPreparedListener = onPreparedListener
+    }
+
+    fun setOnCompletionListener(onCompletionListener: ((mediaPlayer: MediaPlayer) -> Unit)?) {
+        this.onCompletionListener = onCompletionListener
+    }
+
+    fun setOnSeekBarStartTrackingTouchListener(onSeekBarStartTrackingTouchListener: ((seekBar: SeekBar?) -> Unit)?) {
+        this.onSeekBarStartTrackingTouchListener = onSeekBarStartTrackingTouchListener
+    }
+
+    fun setOnSeekBarProgressChangedListener(onSeekBarProgressChangedListener: ((seekBar: SeekBar?, progress: Int, fromUser: Boolean) -> Unit)?) {
+        this.onSeekBarProgressChangedListener = onSeekBarProgressChangedListener
+    }
+
+    fun setOnSeekBarStopTrackingTouchListener(onSeekBarStopTrackingTouchListener: ((seekBar: SeekBar?) -> Unit)?) {
+        this.onSeekBarStopTrackingTouchListener = onSeekBarStopTrackingTouchListener
     }
 
     private fun intToScaleType(i: Int): ImageView.ScaleType {
