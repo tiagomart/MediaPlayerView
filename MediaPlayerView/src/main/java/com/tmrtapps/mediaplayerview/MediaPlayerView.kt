@@ -220,10 +220,34 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
     private lateinit var myHandler: Handler
     private lateinit var myRunnable: Runnable
 
-    private var onButtonClickListener: ((view: View) -> Unit)? = null
-    private var onButtonLongClickListener: ((view: View) -> Unit)? = null
-    private var onDataSourceListener: ((dataSource: String) -> Unit)? = null
-    private var onPreparedListener: ((mediaPlayer: MediaPlayer) -> Unit)? = null
+    val isPlaying
+        get() = run {
+            if (mediaPlayer != null) {
+                mediaPlayer!!.isPlaying
+            } else {
+                false
+            }
+        }
+
+    var onPlay: (() -> Unit)? = null
+
+    var onPause: (() -> Unit)? = null
+
+    var onRelease: (() -> Unit)? = null
+
+    var onButtonClickListener: ((view: View) -> Unit)? = null
+
+    var onButtonLongClickListener: ((view: View) -> Unit)? = null
+
+    var onPreparedListener: ((mediaPlayer: MediaPlayer) -> Unit)? = null
+
+    var onCompletionListener: ((mediaPlayer: MediaPlayer) -> Unit)? = null
+
+    var onSeekBarStartTrackingTouch: ((seekBar: SeekBar?) -> Unit)? = null
+
+    var onSeekBarProgressChanged: ((seekBar: SeekBar?, progress: Int, fromUser: Boolean) -> Unit)? = null
+
+    var onSeekBarStopTrackingTouch: ((seekBar: SeekBar?) -> Unit)? = null
 
     private val binding = MediaPlayerBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -317,26 +341,30 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
-            override fun onStartTrackingTouch(p0: SeekBar?) {
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 pause()
+                onSeekBarStartTrackingTouch?.invoke(seekBar)
             }
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 
-                if (!mediaPlayerPrepared) {
-                    return
+                if (mediaPlayerPrepared) {
+
+                    if (fromUser) {
+
+                        currentPosition = progress
+                        val progressString = makeTimeString(context, progress.toLong())
+                        val durationString = makeTimeString(context, mediaPlayer!!.duration.toLong())
+                        binding.textView.text = context.getString(R.string.progress_duration, progressString, durationString)
+                    }
                 }
 
-                if (fromUser) {
-                    currentPosition = progress
-                    val progressString = makeTimeString(context, progress.toLong())
-                    val durationString = makeTimeString(context, mediaPlayer!!.duration.toLong())
-                    binding.textView.text = context.getString(R.string.progress_duration, progressString, durationString)
-                }
+                onSeekBarProgressChanged?.invoke(seekBar, progress, fromUser)
             }
 
-            override fun onStopTrackingTouch(p0: SeekBar?) {
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 play()
+                onSeekBarStopTrackingTouch?.invoke(seekBar)
             }
         })
 
@@ -415,22 +443,6 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         constraintSet.applyTo(binding.root)
     }
 
-    fun setOnButtonClickListener(onButtonClickListener: ((view: View) -> Unit)?) {
-        this.onButtonClickListener = onButtonClickListener
-    }
-
-    fun setOnButtonLongClickListener(onButtonLongClickListener: ((view: View) -> Unit)?) {
-        this.onButtonLongClickListener = onButtonLongClickListener
-    }
-
-    fun setOnDataSourceListener(onDataSourceListener: ((dataSource: String) -> Unit)?) {
-        this.onDataSourceListener = onDataSourceListener
-    }
-
-    fun setOnPreparedListener(onPreparedListener: ((mediaPlayer: MediaPlayer) -> Unit)?) {
-        this.onPreparedListener = onPreparedListener
-    }
-
     fun prepare(dataSource: String, startOnPrepared: Boolean) {
 
         this.dataSource = dataSource
@@ -461,6 +473,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             if (startOnPrepared) {
                 play()
             }
+
+            onPreparedListener?.invoke(it)
         }
 
         mediaPlayer!!.setOnCompletionListener {
@@ -476,6 +490,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             binding.imageButton.setImageResource(R.drawable.ic_round_play_arrow_24)
 
             binding.seekBar.progress = 0
+
+            onCompletionListener?.invoke(it)
         }
     }
 
@@ -510,6 +526,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             myHandler.post(myRunnable)
 
             binding.imageButton.setImageResource(R.drawable.ic_round_pause_24)
+
+            onPlay?.invoke()
         }
     }
 
@@ -533,6 +551,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         myHandler.removeCallbacks(myRunnable)
 
         binding.imageButton.setImageResource(R.drawable.ic_round_play_arrow_24)
+
+        onPause?.invoke()
     }
 
     fun release() {
@@ -559,6 +579,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         binding.seekBar.progress = 0
 
         mediaPlayer = null
+
+        onRelease?.invoke()
     }
 
     private fun intToScaleType(i: Int): ImageView.ScaleType {
