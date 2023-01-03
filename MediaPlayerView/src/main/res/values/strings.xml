@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hours_minutes_seconds">%02d:%02d:%02d</string>
+    <string name="minutes_seconds">%02d:%02d</string>
+    <string name="progress_duration">%s/%s</string>
+    <string name="button_to_pause_and_resume_the_music">Button to pause and resume the music</string>
+
+</resources>

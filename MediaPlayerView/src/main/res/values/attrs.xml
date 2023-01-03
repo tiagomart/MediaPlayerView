@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MediaPlayerView">
+
+        <attr name="buttonSize" format="dimension" />
+        <attr name="buttonColor" format="reference|color" />
+        <attr name="buttonStrokeColor" format="reference|color" />
+        <attr name="buttonStrokeWidth" format="dimension" />
+        <attr name="buttonRippleColor" format="reference|color" />
+        <attr name="buttonCornerRadius" format="dimension" />
+        <attr name="buttonImageTint" format="reference|color" />
+        <attr name="buttonMarginEnd" format="dimension" />
+        <attr name="buttonMarginStart" format="dimension" />
+        <attr name="buttonMarginTop" format="dimension" />
+        <attr name="buttonScaleType" format="integer">
+            <enum name="centerCrop" value="6"/>
+            <enum name="center" value="5"/>
+            <enum name="fitCenter" value="3"/>
+            <enum name="centerInside" value="7"/>
+            <enum name="fitEnd" value="4"/>
+            <enum name="fitStart" value="2"/>
+            <enum name="fitXY" value="1"/>
+            <enum name="matrix" value="0"/>
+        </attr>
+
+        <attr name="textColor" format="reference|color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textFontFamily" format="string"/>
+        <attr name="textViewMarginEnd" format="dimension" />
+        <attr name="textViewMarginStart" format="dimension" />
+        <attr name="textViewMarginTop" format="dimension" />
+
+        <attr name="seekBarThumbTint" format="reference|color" />
+        <attr name="seekBarProgressTint" format="reference|color" />
+        <attr name="seekBarProgressBackgroundTint" format="reference|color" />
+        <attr name="seekBarMarginBottom" format="dimension" />
+        <attr name="seekBarMarginEnd" format="dimension" />
+        <attr name="seekBarMarginStart" format="dimension" />
+        <attr name="seekBarMarginTop" format="dimension" />
+
+    </declare-styleable>
+
+</resources>
