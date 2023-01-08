@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="button_background_color">#525e94</color>
-    <color name="button_stroke_color">#2e3452</color>
-    <color name="button_ripple_color">#4E4D4A</color>
-    <color name="text_color">#808080</color>
-    <color name="thumb_tint">#525e94</color>
-    <color name="progress_tint">#525e94</color>
-    <color name="progress_background_tint">#525e94</color>
+    <color name="boxColor">#eeeeee</color>
+    <color name="boxStrokeColor">#ffffff</color>
+
+    <color name="titleTextColor">#808080</color>
+    <color name="artistTextColor">#808080</color>
+
+    <color name="errorColorPrimary">#FF7F7F</color>
+    <color name="errorColorSecondary">#FF0000</color>
+
+    <color name="seekBarThumbTint">#525e94</color>
+    <color name="seekBarProgressTint">#525e94</color>
+    <color name="seekBarProgressBackgroundTint">#525e94</color>
+
+    <color name="progressTextColor">#808080</color>
+
+    <color name="buttonBackgroundColor">#525e94</color>
+    <color name="buttonStrokeColor">#2e3452</color>
+    <color name="buttonRippleColor">#4E4D4A</color>
+    <color name="buttonIconTint">#FFFFFF</color>
 
 </resources>

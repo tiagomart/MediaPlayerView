@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Tiago/AndroidStudioProjects/MediaPlayerView/MediaPlayerView/src/main/res/drawable/default_album_art_image.xml" value="0.209" />
+        <entry key="..\:/Users/Tiago/AndroidStudioProjects/MediaPlayerView/MediaPlayerView/src/main/res/drawable/ic_round_music_note_colored_24.xml" value="0.209" />
         <entry key="..\:/Users/Tiago/AndroidStudioProjects/MediaPlayerView/MediaPlayerView/src/main/res/drawable/rounded_shape.xml" value="0.209" />
         <entry key="..\:/Users/Tiago/AndroidStudioProjects/MediaPlayerView/MediaPlayerView/src/main/res/layout/media_player.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Tiago/AndroidStudioProjects/MediaPlayerView/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />

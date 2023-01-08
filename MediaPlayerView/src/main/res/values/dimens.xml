@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="buttonSize">50dp</dimen>
-    <dimen name="cornerRadius">28dp</dimen>
-    <dimen name="strokeWidth">0dp</dimen>
-    <dimen name="textSize">14sp</dimen>
-    <dimen name="buttonMarginTop">16dp</dimen>
-    <dimen name="buttonMarginsStart">16dp</dimen>
-    <dimen name="buttonMarginEnd">16dp</dimen>
+    <dimen name="albumArtWidth">-1px</dimen>
+    <dimen name="albumArtHeight">-2px</dimen>
+    <dimen name="albumArtMarginTop">16dp</dimen>
+    <dimen name="albumArtMarginEnd">16dp</dimen>
+    <dimen name="albumArtMarginStart">16dp</dimen>
+    <dimen name="albumArtBoxCornerRadius">8dp</dimen>
+    <dimen name="albumArtBoxElevation">0dp</dimen>
 
-    <dimen name="textViewMarginTop">16dp</dimen>
-    <dimen name="textViewMarginsStart">16dp</dimen>
-    <dimen name="textViewMarginEnd">16dp</dimen>
+    <dimen name="boxStrokeWidth">0dp</dimen>
+    <dimen name="boxCornerRadius">8dp</dimen>
+    <dimen name="boxElevation">10dp</dimen>
+    <dimen name="boxMargin">16dp</dimen>
 
-    <dimen name="seekbarMarginTop">8dp</dimen>
-    <dimen name="seekbarMarginBottom">16dp</dimen>
-    <dimen name="seekbarMarginsStart">8dp</dimen>
-    <dimen name="seekbarMarginEnd">8dp</dimen>
+    <dimen name="titleTextSize">16sp</dimen>
+
+    <dimen name="artistTextSize">14sp</dimen>
+
+    <dimen name="seekBarMarginTop">16dp</dimen>
+
+    <dimen name="progressTextSize">14sp</dimen>
+
+    <dimen name="playButtonMarginTop">16dp</dimen>
+    <dimen name="playButtonMarginBottom">16dp</dimen>
+    <dimen name="playButtonSize">56dp</dimen>
+    <dimen name="buttonCornerRadius">28dp</dimen>
+    <dimen name="buttonStrokeWidth">0dp</dimen>
+
+    <dimen name="nextButtonSize">46dp</dimen>
+    <dimen name="nextButtonMarginStart">16dp</dimen>
+
+    <dimen name="prevButtonSize">46dp</dimen>
+    <dimen name="prevButtonMarginEnd">16dp</dimen>
 
 </resources>

@@ -3,41 +3,78 @@
 
     <declare-styleable name="MediaPlayerView">
 
-        <attr name="buttonSize" format="dimension" />
-        <attr name="buttonColor" format="reference|color" />
-        <attr name="buttonStrokeColor" format="reference|color" />
-        <attr name="buttonStrokeWidth" format="dimension" />
-        <attr name="buttonRippleColor" format="reference|color" />
-        <attr name="buttonCornerRadius" format="dimension" />
-        <attr name="buttonImageTint" format="reference|color" />
-        <attr name="buttonMarginEnd" format="dimension" />
-        <attr name="buttonMarginStart" format="dimension" />
-        <attr name="buttonMarginTop" format="dimension" />
-        <attr name="buttonScaleType" format="integer">
-            <enum name="centerCrop" value="6"/>
-            <enum name="center" value="5"/>
-            <enum name="fitCenter" value="3"/>
-            <enum name="centerInside" value="7"/>
-            <enum name="fitEnd" value="4"/>
-            <enum name="fitStart" value="2"/>
-            <enum name="fitXY" value="1"/>
-            <enum name="matrix" value="0"/>
+        <attr name="boxColor" format="reference|color" />
+        <attr name="boxCornerRadius" format="dimension" />
+        <attr name="boxElevation" format="dimension" />
+        <attr name="boxMargin" format="dimension" />
+        <attr name="errorColorPrimary" format="reference|color" />
+        <attr name="errorColorSecondary" format="reference|color" />
+
+        <attr name="albumArtIsVisible" format="boolean" />
+        <attr name="albumArtWidth" format="dimension">
+            <enum name="fill_parent" value="-1" />
+            <enum name="match_parent" value="-1" />
+            <enum name="wrap_content" value="-2" />
         </attr>
+        <attr name="albumArtHeight" format="dimension">
+            <enum name="fill_parent" value="-1" />
+            <enum name="match_parent" value="-1" />
+            <enum name="wrap_content" value="-2" />
+        </attr>
+        <attr name="albumArtMarginTop" format="dimension" />
+        <attr name="albumArtMarginEnd" format="dimension" />
+        <attr name="albumArtMarginStart" format="dimension" />
+        <attr name="albumArtBoxCornerRadius" format="dimension" />
+        <attr name="albumArtBoxElevation" format="dimension" />
 
-        <attr name="textColor" format="reference|color" />
-        <attr name="textSize" format="dimension" />
+        <attr name="titleIsVisible" format="boolean" />
+        <attr name="titleTextSize" format="dimension" />
+        <attr name="titleTextColor" format="reference|color" />
+
+        <attr name="artistIsVisible" format="boolean" />
+        <attr name="artistTextSize" format="dimension" />
+        <attr name="artistTextColor" format="reference|color" />
         <attr name="textFontFamily" format="string"/>
-        <attr name="textViewMarginEnd" format="dimension" />
-        <attr name="textViewMarginStart" format="dimension" />
-        <attr name="textViewMarginTop" format="dimension" />
 
+        <attr name="seekBarIsVisible" format="boolean" />
+        <attr name="seekBarMarginTop" format="dimension" />
         <attr name="seekBarThumbTint" format="reference|color" />
         <attr name="seekBarProgressTint" format="reference|color" />
         <attr name="seekBarProgressBackgroundTint" format="reference|color" />
-        <attr name="seekBarMarginBottom" format="dimension" />
-        <attr name="seekBarMarginEnd" format="dimension" />
-        <attr name="seekBarMarginStart" format="dimension" />
-        <attr name="seekBarMarginTop" format="dimension" />
+
+        <attr name="progressTextColor" format="reference|color" />
+        <attr name="progressTextSize" format="dimension" />
+
+        <attr name="playButtonIsVisible" format="boolean" />
+        <attr name="playButtonSize" format="dimension" />
+        <attr name="playButtonMarginTop" format="dimension" />
+        <attr name="playButtonMarginBottom" format="dimension" />
+        <attr name="playButtonColor" format="reference|color" />
+        <attr name="playButtonStrokeColor" format="reference|color" />
+        <attr name="playButtonStrokeWidth" format="dimension" />
+        <attr name="playButtonRippleColor" format="reference|color" />
+        <attr name="playButtonCornerRadius" format="dimension" />
+        <attr name="playButtonIconTint" format="reference|color" />
+
+        <attr name="nextButtonIsVisible" format="boolean" />
+        <attr name="nextButtonSize" format="dimension" />
+        <attr name="nextButtonMarginStart" format="dimension" />
+        <attr name="nextButtonColor" format="reference|color" />
+        <attr name="nextButtonStrokeColor" format="reference|color" />
+        <attr name="nextButtonStrokeWidth" format="dimension" />
+        <attr name="nextButtonRippleColor" format="reference|color" />
+        <attr name="nextButtonCornerRadius" format="dimension" />
+        <attr name="nextButtonIconTint" format="reference|color" />
+
+        <attr name="prevButtonIsVisible" format="boolean" />
+        <attr name="prevButtonSize" format="dimension" />
+        <attr name="prevButtonMarginEnd" format="dimension" />
+        <attr name="prevButtonColor" format="reference|color" />
+        <attr name="prevButtonStrokeColor" format="reference|color" />
+        <attr name="prevButtonStrokeWidth" format="dimension" />
+        <attr name="prevButtonRippleColor" format="reference|color" />
+        <attr name="prevButtonCornerRadius" format="dimension" />
+        <attr name="prevButtonIconTint" format="reference|color" />
 
     </declare-styleable>
 
