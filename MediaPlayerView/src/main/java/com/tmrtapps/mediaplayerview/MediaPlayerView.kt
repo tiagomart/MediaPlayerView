@@ -654,7 +654,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         binding.playButton.isEnabled = false
         binding.nextButton.isEnabled = false
 
-        mediaPlayer.stop()
+        if (mediaPlayer.isPlaying) mediaPlayer.stop()
         mediaPlayer.reset()
 
         mediaPlayer.setDataSource(data)
