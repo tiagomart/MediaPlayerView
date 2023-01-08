@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="albumArtIsVisible">true</bool>
+    <bool name="titleIsVisible">true</bool>
+    <bool name="artistIsVisible">true</bool>
+    <bool name="seekBarIsVisible">true</bool>
+    <bool name="prevButtonIsVisible">true</bool>
+    <bool name="playButtonIsVisible">true</bool>
+    <bool name="nextButtonIsVisible">true</bool>
+</resources>
