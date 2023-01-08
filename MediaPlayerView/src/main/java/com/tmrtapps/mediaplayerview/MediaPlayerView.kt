@@ -5,7 +5,11 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
@@ -438,6 +442,11 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
     private lateinit var myHandler: Handler
     private lateinit var myRunnable: Runnable
 
+    private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private var audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener? = null
+    private var playbackAttributes: AudioAttributes? = null
+    private var focusRequest: AudioFocusRequest? = null
+
     private val binding = MediaPlayerBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
@@ -531,6 +540,37 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             }
 
             myHandler = Handler(Looper.getMainLooper())
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                playbackAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+
+                audioFocusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+                    when (focusChange) {
+
+                        AudioManager.AUDIOFOCUS_GAIN -> {
+                            play()
+                        }
+
+                        AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                            pause()
+                        }
+
+                        AudioManager.AUDIOFOCUS_LOSS -> {
+                            stop()
+                        }
+                    }
+                }
+
+                focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(playbackAttributes!!)
+                    .setOnAudioFocusChangeListener(audioFocusChangeListener!!)
+                    .setAcceptsDelayedFocusGain(true)
+                    .build()
+            }
 
             binding.prevButton.isEnabled = false
             binding.prevButton.setOnClickListener {
@@ -697,12 +737,24 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             return
         }
 
-        mediaPlayer.seekTo(currentPosition)
-        mediaPlayer.start()
+        var canStart = true
 
-        myHandler.post(myRunnable)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-        binding.playButton.setImageResource(R.drawable.ic_round_pause_24)
+            val audioFocusRequest = audioManager.requestAudioFocus(focusRequest!!)
+
+            canStart = audioFocusRequest == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        }
+
+        if (canStart) {
+
+            mediaPlayer.seekTo(currentPosition)
+            mediaPlayer.start()
+
+            myHandler.post(myRunnable)
+
+            binding.playButton.setImageResource(R.drawable.ic_round_pause_24)
+        }
     }
 
     fun pause() {
@@ -770,6 +822,42 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
         prepare(index)
+    }
+
+    fun release() {
+
+        //on error code
+        mediaPlayer.stop()
+        mediaPlayer.release()
+
+        mediaPlayerPrepared = false
+        currentPosition = 0
+
+        myHandler.removeCallbacks(myRunnable)
+
+        Glide.with(context)
+            .load(albumArtPlaceholder)
+            .into(binding.albumArtImageView)
+
+        binding.rootCardView.setCardBackgroundColor(boxColor)
+
+        binding.titleTextView.text = context.getString(R.string.title)
+        binding.titleTextView.setTextColor(titleTextColor)
+        binding.artistTextView.text = context.getString(R.string.artist)
+        binding.artistTextView.setTextColor(artistTextColor)
+
+        binding.seekBar.isEnabled = false
+        binding.seekBar.max = 100
+        binding.seekBar.progress = 0
+
+        binding.playButton.isEnabled = false
+        binding.playButton.setImageResource(R.drawable.ic_round_play_arrow_24)
+
+        val progress = makeTimeString(context, 0)
+        binding.currentProgressTextView.text = progress
+
+        val duration = makeTimeString(context, 0)
+        binding.maxDurationTextView.text = duration
     }
 
     private fun handleBackground() {
