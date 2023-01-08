@@ -36,8 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:contentDescription="@string/cover_image"
-                    android:src="@drawable/default_album_art_image">
+                    android:contentDescription="@string/cover_image">
 
                 </ImageView>
 

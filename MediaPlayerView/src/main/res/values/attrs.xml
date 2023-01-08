@@ -26,6 +26,7 @@
         <attr name="albumArtMarginStart" format="dimension" />
         <attr name="albumArtBoxCornerRadius" format="dimension" />
         <attr name="albumArtBoxElevation" format="dimension" />
+        <attr name="albumArtPlaceholder" format="reference" />
 
         <attr name="titleIsVisible" format="boolean" />
         <attr name="titleTextSize" format="dimension" />

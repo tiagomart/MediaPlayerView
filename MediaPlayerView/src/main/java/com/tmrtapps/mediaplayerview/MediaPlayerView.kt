@@ -2,6 +2,7 @@ package com.tmrtapps.mediaplayerview
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.media.MediaPlayer
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.widget.SeekBar
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
+import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -113,6 +115,9 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             field = value
             handleAlbumArtImageView()
         }
+
+
+    var albumArtPlaceholder: Drawable? = null
 
 
     var artistIsVisible = context.resources.getBoolean(R.bool.artistIsVisible)
@@ -456,6 +461,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             albumArtMarginStart = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_albumArtMarginStart, albumArtMarginStart)
             albumArtBoxCornerRadius = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_albumArtBoxCornerRadius, albumArtBoxCornerRadius)
             albumArtBoxElevation = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_albumArtBoxElevation, albumArtBoxElevation)
+            albumArtPlaceholder = attributes.getDrawable(R.styleable.MediaPlayerView_albumArtPlaceholder)
 
             titleIsVisible = attributes.getBoolean(R.styleable.MediaPlayerView_titleIsVisible, titleIsVisible)
             titleTextSize = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_titleTextSize, titleTextSize)
@@ -571,8 +577,6 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
             })
         }
-
-        handleBackground()
     }
 
     fun setDataSource(list: MutableList<Audio>) {
@@ -594,8 +598,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         Glide.with(context)
             .load(albumArt)
-            .error(R.drawable.default_album_art_image)
-            .placeholder(R.drawable.default_album_art_image)
+            .error(albumArtPlaceholder)
+            .placeholder(albumArtPlaceholder)
             .into(binding.albumArtImageView)
 
         binding.rootCardView.setCardBackgroundColor(boxColor)
@@ -660,7 +664,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             myHandler.removeCallbacks(myRunnable)
 
             Glide.with(context)
-                .load(R.drawable.default_album_art_image)
+                .load(albumArtPlaceholder)
                 .into(binding.albumArtImageView)
 
             binding.rootCardView.setCardBackgroundColor(errorColorPrimary)
