@@ -1,6 +1,7 @@
 package com.tmrtapps.mediaplayerview
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
@@ -19,13 +20,13 @@ import android.view.LayoutInflater
 import android.widget.SeekBar
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
-import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.*
+import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.tmrtapps.mediaplayerview.databinding.MediaPlayerBinding
 
@@ -868,9 +869,11 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         myHandler.removeCallbacks(myRunnable)
 
-        Glide.with(context)
-            .load(albumArtPlaceholder)
-            .into(binding.albumArtImageView)
+        if (isValidContextForGlide(context)) {
+            Glide.with(context)
+                .load(albumArtPlaceholder)
+                .into(binding.albumArtImageView)
+        }
 
         binding.rootCardView.setCardBackgroundColor(boxColor)
 
@@ -1081,5 +1084,26 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     data class Audio(var data: String, var albumArt: Any?, var title: String, var artist: String) {
         constructor(data: String) : this(data, null, "", "")
+    }
+
+    private fun isValidContextForGlide(context: Context?): Boolean {
+
+        if (context == null) {
+            return false
+        }
+
+        if (context is Activity) {
+            if (context.isDestroyed || context.isFinishing) {
+                return false
+            }
+        }
+
+        if (context is FragmentActivity) {
+            if (context.isDestroyed || context.isFinishing) {
+                return false
+            }
+        }
+
+        return true
     }
 }
