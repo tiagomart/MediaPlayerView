@@ -7,8 +7,7 @@
     <color name="titleTextColor">#808080</color>
     <color name="artistTextColor">#808080</color>
 
-    <color name="errorColorPrimary">#FF7F7F</color>
-    <color name="errorColorSecondary">#FF0000</color>
+    <color name="boxErrorColor">#FF7F7F</color>
 
     <color name="seekBarThumbTint">#525e94</color>
     <color name="seekBarProgressTint">#525e94</color>

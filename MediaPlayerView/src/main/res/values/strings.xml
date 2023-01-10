@@ -9,5 +9,6 @@
     <string name="cover_image">Cover image</string>
     <string name="media_button">Media button</string>
     <string name="could_not_load_this_resource">Could not load this resource</string>
+    <string name="cannot_play_this_audio">Cannot play this audio</string>
 
 </resources>

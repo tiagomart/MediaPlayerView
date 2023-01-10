@@ -1,9 +1,9 @@
 package com.tmrtapps.mediaplayerview
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
@@ -17,7 +17,10 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.widget.ImageView
 import android.widget.SeekBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
 import androidx.annotation.FontRes
@@ -30,193 +33,211 @@ import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.tmrtapps.mediaplayerview.databinding.MediaPlayerBinding
 
-@SuppressLint("ClickableViewAccessibility")
 class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     @ColorInt
     var boxColor = ContextCompat.getColor(context, R.color.boxColor)
         set(value) {
             field = value
-            handleBackground()
+            cardView()
         }
 
     @Dimension
     var boxCornerRadius = context.resources.getDimensionPixelSize(R.dimen.boxCornerRadius)
         set(value) {
             field = value
-            handleBackground()
+            cardView()
         }
 
     @Dimension
     var boxElevation = context.resources.getDimensionPixelSize(R.dimen.boxElevation)
         set(value) {
             field = value
-            handleBackground()
+            cardView()
         }
 
     @Dimension
-    var boxMargin = context.resources.getDimensionPixelSize(R.dimen.boxMargin)
+    var boxPadding = context.resources.getDimensionPixelSize(R.dimen.boxPadding)
         set(value) {
             field = value
-            handleBackground()
+            cardView()
         }
 
     @ColorInt
-    var errorColorPrimary = ContextCompat.getColor(context, R.color.errorColorPrimary)
-
-    @ColorInt
-    var errorColorSecondary = ContextCompat.getColor(context, R.color.errorColorSecondary)
+    var boxErrorColor = ContextCompat.getColor(context, R.color.boxErrorColor)
 
 
     var albumArtIsVisible = context.resources.getBoolean(R.bool.albumArtIsVisible)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
     @Dimension
     var albumArtWidth = context.resources.getDimensionPixelSize(R.dimen.albumArtWidth)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
     @Dimension
     var albumArtHeight = context.resources.getDimensionPixelSize(R.dimen.albumArtHeight)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
     @Dimension
     var albumArtMarginEnd = context.resources.getDimensionPixelSize(R.dimen.albumArtMarginEnd)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
     @Dimension
     var albumArtMarginStart = context.resources.getDimensionPixelSize(R.dimen.albumArtMarginStart)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
     @Dimension
     var albumArtMarginTop = context.resources.getDimensionPixelSize(R.dimen.albumArtMarginTop)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
     @Dimension
     var albumArtBoxCornerRadius = context.resources.getDimensionPixelSize(R.dimen.albumArtBoxCornerRadius)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
     @Dimension
     var albumArtBoxElevation = context.resources.getDimensionPixelSize(R.dimen.albumArtBoxElevation)
         set(value) {
             field = value
-            handleAlbumArtImageView()
+            albumArt()
         }
 
+    var albumArtPlaceholder: Drawable? = ContextCompat.getDrawable(context, R.drawable.default_album_art_image)
 
-    var albumArtPlaceholder: Drawable? = null
-
-
-    var artistIsVisible = context.resources.getBoolean(R.bool.artistIsVisible)
+    var albumArtScaleType = ImageView.ScaleType.FIT_CENTER
         set(value) {
             field = value
-            handleArtistTextView()
-        }
-
-    @Dimension
-    var artistTextSize = context.resources.getDimensionPixelSize(R.dimen.artistTextSize)
-        set(value) {
-            field = value
-            handleArtistTextView()
-        }
-
-    @ColorInt
-    var artistTextColor = ContextCompat.getColor(context, R.color.artistTextColor)
-        set(value) {
-            field = value
-            handleArtistTextView()
+            albumArt()
         }
 
 
     var titleIsVisible = context.resources.getBoolean(R.bool.titleIsVisible)
         set(value) {
             field = value
-            handleTitleTextView()
+            titleTextView()
         }
 
     @Dimension
     var titleTextSize = context.resources.getDimensionPixelSize(R.dimen.titleTextSize)
         set(value) {
             field = value
-            handleTitleTextView()
+            titleTextView()
         }
 
     @ColorInt
     var titleTextColor = ContextCompat.getColor(context, R.color.titleTextColor)
         set(value) {
             field = value
-            handleTitleTextView()
+            titleTextView()
         }
 
     var textSizeUnit = TypedValue.COMPLEX_UNIT_PX
         set(value) {
             field = value
-            handleTitleTextView()
-            handleArtistTextView()
+            titleTextView()
+            artistTextView()
+        }
+
+    @FontRes
+    var titleFontFamilyResId = -1
+        set(value) {
+            field = value
+            titleTextView()
+        }
+
+    var titleTextStyle = Typeface.BOLD
+        set(value) {
+            field = value
+            titleTextView()
         }
 
 
-    @FontRes
-    var fontFamilyResId = -1
+    var artistIsVisible = context.resources.getBoolean(R.bool.artistIsVisible)
         set(value) {
             field = value
-            handleTitleTextView()
-            handleArtistTextView()
+            artistTextView()
+        }
+
+    @Dimension
+    var artistTextSize = context.resources.getDimensionPixelSize(R.dimen.artistTextSize)
+        set(value) {
+            field = value
+            artistTextView()
+        }
+
+    @ColorInt
+    var artistTextColor = ContextCompat.getColor(context, R.color.artistTextColor)
+        set(value) {
+            field = value
+            artistTextView()
+        }
+
+    @FontRes
+    var artistFontFamilyResId = -1
+        set(value) {
+            field = value
+            artistTextView()
+        }
+
+    var artistTextStyle = Typeface.NORMAL
+        set(value) {
+            field = value
+            artistTextView()
         }
 
 
     var seekBarIsVisible = context.resources.getBoolean(R.bool.seekBarIsVisible)
         set(value) {
             field = value
-            handleSeekBar()
+            seekBar()
         }
 
     @Dimension
     var seekBarMarginTop = context.resources.getDimensionPixelSize(R.dimen.seekBarMarginTop)
         set(value) {
             field = value
-            handleSeekBar()
+            seekBar()
         }
 
     @ColorInt
     var seekBarThumbTint = ContextCompat.getColor(context, R.color.seekBarThumbTint)
         set(value) {
             field = value
-            handleSeekBar()
+            seekBar()
         }
 
     @ColorInt
     var seekBarProgressTint = ContextCompat.getColor(context, R.color.seekBarProgressTint)
         set(value) {
             field = value
-            handleSeekBar()
+            seekBar()
         }
 
     @ColorInt
     var seekBarProgressBackgroundTint = ContextCompat.getColor(context, R.color.seekBarProgressBackgroundTint)
         set(value) {
             field = value
-            handleSeekBar()
+            seekBar()
         }
 
 
@@ -224,231 +245,239 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
     var progressTextSize = context.resources.getDimensionPixelSize(R.dimen.progressTextSize)
         set(value) {
             field = value
-            handleProgressTextView()
+            progressTextView()
         }
 
     @ColorInt
     var progressTextColor = ContextCompat.getColor(context, R.color.progressTextColor)
         set(value) {
             field = value
-            handleProgressTextView()
+            progressTextView()
+        }
+
+    @FontRes
+    var progressFontFamilyResId = -1
+        set(value) {
+            field = value
+            progressTextView()
+        }
+
+    var progressTextStyle = Typeface.NORMAL
+        set(value) {
+            field = value
+            progressTextView()
         }
 
 
     var playButtonIsVisible = context.resources.getBoolean(R.bool.playButtonIsVisible)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @Dimension
     var playButtonSize = context.resources.getDimensionPixelSize(R.dimen.playButtonSize)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @Dimension
     var playButtonMarginTop = context.resources.getDimensionPixelSize(R.dimen.playButtonMarginTop)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @Dimension
     var playButtonMarginBottom = context.resources.getDimensionPixelSize(R.dimen.playButtonMarginBottom)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @ColorInt
     var playButtonColor = ContextCompat.getColor(context, R.color.buttonBackgroundColor)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @ColorInt
     var playButtonStrokeColor = ContextCompat.getColor(context, R.color.buttonStrokeColor)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @Dimension
     var playButtonStrokeWidth = context.resources.getDimensionPixelSize(R.dimen.buttonStrokeWidth)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @ColorInt
     var playButtonRippleColor = ContextCompat.getColor(context, R.color.buttonRippleColor)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @Dimension
     var playButtonCornerRadius = context.resources.getDimensionPixelSize(R.dimen.buttonCornerRadius)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
     @ColorInt
     var playButtonIconTint = ContextCompat.getColor(context, R.color.buttonIconTint)
         set(value) {
             field = value
-            handlePlayButton()
+            playButton()
         }
 
 
     var nextButtonIsVisible = context.resources.getBoolean(R.bool.nextButtonIsVisible)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @Dimension
     var nextButtonSize = context.resources.getDimensionPixelSize(R.dimen.nextButtonSize)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @Dimension
     var nextButtonMarginStart = context.resources.getDimensionPixelSize(R.dimen.nextButtonMarginStart)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @ColorInt
     var nextButtonColor = ContextCompat.getColor(context, R.color.buttonBackgroundColor)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @ColorInt
     var nextButtonStrokeColor = ContextCompat.getColor(context, R.color.buttonStrokeColor)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @Dimension
     var nextButtonStrokeWidth = context.resources.getDimensionPixelSize(R.dimen.buttonStrokeWidth)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @ColorInt
     var nextButtonRippleColor = ContextCompat.getColor(context, R.color.buttonRippleColor)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @Dimension
     var nextButtonCornerRadius = context.resources.getDimensionPixelSize(R.dimen.buttonCornerRadius)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
     @ColorInt
     var nextButtonIconTint = ContextCompat.getColor(context, R.color.buttonIconTint)
         set(value) {
             field = value
-            handleNextButton()
+            nextButton()
         }
 
 
     var prevButtonIsVisible = context.resources.getBoolean(R.bool.prevButtonIsVisible)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @Dimension
     var prevButtonSize = context.resources.getDimensionPixelSize(R.dimen.prevButtonSize)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @Dimension
     var prevButtonMarginEnd = context.resources.getDimensionPixelSize(R.dimen.prevButtonMarginEnd)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @ColorInt
     var prevButtonColor = ContextCompat.getColor(context, R.color.buttonBackgroundColor)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @ColorInt
     var prevButtonStrokeColor = ContextCompat.getColor(context, R.color.buttonStrokeColor)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @Dimension
     var prevButtonStrokeWidth = context.resources.getDimensionPixelSize(R.dimen.buttonStrokeWidth)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @ColorInt
     var prevButtonRippleColor = ContextCompat.getColor(context, R.color.buttonRippleColor)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @Dimension
     var prevButtonCornerRadius = context.resources.getDimensionPixelSize(R.dimen.buttonCornerRadius)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
 
     @ColorInt
     var prevButtonIconTint = ContextCompat.getColor(context, R.color.buttonIconTint)
         set(value) {
             field = value
-            handlePrevButton()
+            prevButton()
         }
-
-    private var mediaPlayer: MediaPlayer? = null
-    private var mediaPlayerPrepared = false
-    private var currentPosition = 0
-
-    private var sourceList = mutableListOf<Audio>()
-    private var index = 0
-
-    private var data = ""
-    private var albumArt: Any? = null
-    private var title = ""
-    private var artist = ""
-
-    private lateinit var myHandler: Handler
-    private lateinit var myRunnable: Runnable
 
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener? = null
     private var playbackAttributes: AudioAttributes? = null
     private var focusRequest: AudioFocusRequest? = null
+
+    private var mediaPlayer: MediaPlayer? = null
+    private var mediaPlayerPrepared = false
+    private var mediaPlayerCurrentPosition = 0
+
+    private var sourceList = mutableListOf<Audio>()
+    private var index = 0
+
+    private lateinit var myHandler: Handler
+    private lateinit var myRunnable: Runnable
 
     private val binding = MediaPlayerBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -461,9 +490,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             boxColor = attributes.getColor(R.styleable.MediaPlayerView_boxColor, boxColor)
             boxCornerRadius = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_boxCornerRadius, boxCornerRadius)
             boxElevation = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_boxElevation, boxElevation)
-            boxMargin = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_boxMargin, boxMargin)
-            errorColorPrimary = attributes.getColor(R.styleable.MediaPlayerView_errorColorPrimary, errorColorPrimary)
-            errorColorSecondary = attributes.getColor(R.styleable.MediaPlayerView_errorColorSecondary, errorColorSecondary)
+            boxPadding = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_boxPadding, boxPadding)
+            boxErrorColor = attributes.getColor(R.styleable.MediaPlayerView_boxErrorColor, boxErrorColor)
 
             albumArtIsVisible = attributes.getBoolean(R.styleable.MediaPlayerView_albumArtIsVisible, albumArtIsVisible)
             albumArtWidth = attributes.getLayoutDimension(R.styleable.MediaPlayerView_albumArtWidth, albumArtWidth)
@@ -473,17 +501,20 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             albumArtMarginStart = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_albumArtMarginStart, albumArtMarginStart)
             albumArtBoxCornerRadius = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_albumArtBoxCornerRadius, albumArtBoxCornerRadius)
             albumArtBoxElevation = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_albumArtBoxElevation, albumArtBoxElevation)
-            albumArtPlaceholder = attributes.getDrawable(R.styleable.MediaPlayerView_albumArtPlaceholder)
+            albumArtPlaceholder = attributes.getDrawable(R.styleable.MediaPlayerView_albumArtPlaceholder) ?: albumArtPlaceholder
+            albumArtScaleType = intToImageViewScaleType(attributes.getInt(R.styleable.MediaPlayerView_albumArtScaleType, imageViewScaleTypeToInt(albumArtScaleType)))
 
             titleIsVisible = attributes.getBoolean(R.styleable.MediaPlayerView_titleIsVisible, titleIsVisible)
             titleTextSize = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_titleTextSize, titleTextSize)
             titleTextColor = attributes.getColor(R.styleable.MediaPlayerView_titleTextColor, titleTextColor)
+            titleFontFamilyResId = attributes.getResourceId(R.styleable.MediaPlayerView_titleFontFamily, -1)
+            titleTextStyle = attributes.getInt(R.styleable.MediaPlayerView_titleTextStyleTypeFace, titleTextStyle)
 
             artistIsVisible = attributes.getBoolean(R.styleable.MediaPlayerView_artistIsVisible, artistIsVisible)
             artistTextSize = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_artistTextSize, artistTextSize)
             artistTextColor = attributes.getColor(R.styleable.MediaPlayerView_artistTextColor, artistTextColor)
-
-            fontFamilyResId = attributes.getResourceId(R.styleable.MediaPlayerView_textFontFamily, -1)
+            artistFontFamilyResId = attributes.getResourceId(R.styleable.MediaPlayerView_artistFontFamily, -1)
+            artistTextStyle = attributes.getInt(R.styleable.MediaPlayerView_artistTextStyleTypeFace, artistTextStyle)
 
             seekBarIsVisible = attributes.getBoolean(R.styleable.MediaPlayerView_seekBarIsVisible, seekBarIsVisible)
             seekBarMarginTop = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_seekBarMarginTop, seekBarMarginTop)
@@ -493,6 +524,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             progressTextSize = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_progressTextSize, progressTextSize)
             progressTextColor = attributes.getColor(R.styleable.MediaPlayerView_progressTextColor, progressTextColor)
+            progressFontFamilyResId = attributes.getResourceId(R.styleable.MediaPlayerView_progressFontFamily, -1)
+            progressTextStyle = attributes.getInt(R.styleable.MediaPlayerView_progressTextStyleTypeFace, progressTextStyle)
 
             playButtonIsVisible = attributes.getBoolean(R.styleable.MediaPlayerView_playButtonIsVisible, playButtonIsVisible)
             playButtonSize = attributes.getDimensionPixelSize(R.styleable.MediaPlayerView_playButtonSize, playButtonSize)
@@ -526,6 +559,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             prevButtonIconTint = attributes.getColor(R.styleable.MediaPlayerView_prevButtonIconTint, prevButtonIconTint)
 
             attributes.recycle()
+
+            Typeface.BOLD
         }
 
         if (!binding.constraintLayout.isInEditMode) {
@@ -540,7 +575,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
                 binding.seekBar.progress = mediaPlayer!!.currentPosition
 
-                val progress = makeTimeString(context, mediaPlayer!!.currentPosition.toLong())
+                val progress = mediaPlayer!!.currentPosition.toLong().toTimeString(context)
                 binding.currentProgressTextView.text = progress
 
                 myHandler.postDelayed(myRunnable, 100)
@@ -567,7 +602,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
                         }
 
                         AudioManager.AUDIOFOCUS_LOSS -> {
-                            stop()
+                            pause(true)
                         }
                     }
                 }
@@ -583,28 +618,13 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             binding.prevButton.setOnClickListener {
                 prev()
             }
-            binding.prevButton.setOnTouchListener(ButtonAnimationTouchListener())
 
             binding.playButton.isEnabled = false
-            binding.playButton.setOnClickListener {
-
-                if (mediaPlayer == null) {
-                    return@setOnClickListener
-                }
-
-                if (mediaPlayer!!.isPlaying) {
-                    pause()
-                } else {
-                    play()
-                }
-            }
-            binding.playButton.setOnTouchListener(ButtonAnimationTouchListener())
 
             binding.nextButton.isEnabled = false
             binding.nextButton.setOnClickListener {
                 next()
             }
-            binding.nextButton.setOnTouchListener(ButtonAnimationTouchListener())
 
             binding.seekBar.isEnabled = false
             binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -620,8 +640,8 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
                     }
 
                     if (fromUser) {
-                        currentPosition = progress
-                        val progressString = makeTimeString(context, progress.toLong())
+                        mediaPlayerCurrentPosition = progress
+                        val progressString = progress.toLong().toTimeString(context)
                         binding.currentProgressTextView.text = progressString
                     }
                 }
@@ -637,115 +657,132 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         sourceList.clear()
         sourceList.addAll(list)
-
-        if (sourceList.isEmpty()) {
-            binding.prevButton.isEnabled = false
-            binding.nextButton.isEnabled = false
-        }
     }
 
     fun prepare (i: Int = 0, startOnPrepared: Boolean = true) {
 
         index = i
 
-        data = sourceList[index].data
-        albumArt = sourceList[index].albumArt
-        title = sourceList[index].title
-        artist = sourceList[index].artist
+        binding.cardView.setAnimatedBackgroundColor(boxColor, 300)
 
-        Glide.with(context)
-            .load(albumArt)
-            .error(albumArtPlaceholder)
-            .placeholder(albumArtPlaceholder)
-            .into(binding.albumArtImageView)
+        if (isValidContextForGlide(context)) {
+            Glide.with(context)
+                .load(sourceList[index].albumArt)
+                .error(albumArtPlaceholder)
+                .placeholder(albumArtPlaceholder)
+                .into(binding.albumArtImageView)
+        }
 
-        binding.rootCardView.setCardBackgroundColor(boxColor)
+        binding.titleTextView.text = sourceList[index].title
+        binding.titleTextView.setAnimatedTextColor(titleTextColor, 300)
 
-        binding.titleTextView.text = title
-        binding.titleTextView.setTextColor(titleTextColor)
-        binding.artistTextView.text = artist
-        binding.artistTextView.setTextColor(artistTextColor)
+        binding.artistTextView.text = sourceList[index].artist
+        binding.artistTextView.setAnimatedTextColor(artistTextColor, 300)
 
         binding.seekBar.isEnabled = false
+        binding.seekBar.max = 100
+        binding.seekBar.progress = 0
+
+        binding.currentProgressTextView.setText(R.string.zero_zero)
+        binding.maxProgressTextView.setText(R.string.zero_zero)
+
         binding.prevButton.isEnabled = false
         binding.playButton.isEnabled = false
         binding.nextButton.isEnabled = false
 
-        if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer()
-        }
+        try {
 
-        mediaPlayer!!.reset()
+            if (mediaPlayer == null) mediaPlayer = MediaPlayer()
 
-        mediaPlayer!!.setDataSource(data)
+            mediaPlayer!!.reset()
 
-        mediaPlayer!!.prepareAsync()
+            mediaPlayer!!.setDataSource(sourceList[index].data)
 
-        mediaPlayer!!.setOnPreparedListener {
+            mediaPlayer!!.prepareAsync()
 
-            binding.prevButton.isEnabled = true
-            binding.playButton.isEnabled = true
-            binding.nextButton.isEnabled = true
+            mediaPlayer!!.setOnPreparedListener {
 
-            binding.seekBar.isEnabled = true
-            binding.seekBar.max = mediaPlayer!!.duration
-            binding.seekBar.progress = 0
+                binding.seekBar.isEnabled = true
+                binding.seekBar.max = mediaPlayer!!.duration
+                binding.seekBar.progress = 0
 
-            mediaPlayerPrepared = true
-            currentPosition = 0
+                val duration = mediaPlayer!!.duration.toLong().toTimeString(context)
+                binding.maxProgressTextView.text = duration
 
-            val progress = makeTimeString(context, currentPosition.toLong())
-            binding.currentProgressTextView.text = progress
+                binding.prevButton.isEnabled = true
 
-            val duration = makeTimeString(context, mediaPlayer!!.duration.toLong())
-            binding.maxDurationTextView.text = duration
+                binding.playButton.isEnabled = true
+                binding.playButton.setOnClickListener {
+                    if (mediaPlayer!!.isPlaying) {
+                        pause()
+                    } else {
+                        play()
+                    }
+                }
 
-            if (startOnPrepared) play()
-        }
+                binding.nextButton.isEnabled = true
 
-        mediaPlayer!!.setOnCompletionListener {
+                mediaPlayerPrepared = true
+                mediaPlayerCurrentPosition = 0
 
-            if (sourceList.isEmpty()){
-                stop()
-            } else {
-                next()
+                if (startOnPrepared) play()
             }
-        }
 
-        mediaPlayer!!.setOnErrorListener { _, _, _ ->
+            mediaPlayer!!.setOnErrorListener { _, _, _ ->
 
-            //on error code
+                binding.cardView.setAnimatedBackgroundColor(boxErrorColor, 300)
 
-            mediaPlayerPrepared = false
-            currentPosition = 0
+                binding.seekBar.isEnabled = false
+                binding.seekBar.max = 100
+                binding.seekBar.progress = 0
 
-            myHandler.removeCallbacks(myRunnable)
+                binding.currentProgressTextView.setText(R.string.zero_zero)
+                binding.maxProgressTextView.setText(R.string.zero_zero)
 
-            Glide.with(context)
-                .load(albumArtPlaceholder)
-                .into(binding.albumArtImageView)
+                binding.prevButton.isEnabled = true
 
-            binding.rootCardView.setCardBackgroundColor(errorColorPrimary)
+                binding.playButton.isEnabled = true
+                binding.playButton.setImageResource(R.drawable.ic_round_play_arrow_24)
+                binding.playButton.setOnClickListener {
+                    Toast.makeText(context, R.string.cannot_play_this_audio, Toast.LENGTH_SHORT).show()
+                }
 
-            binding.titleTextView.text = title
-            binding.titleTextView.setTextColor(errorColorSecondary)
-            binding.artistTextView.text = context.getString(R.string.could_not_load_this_resource)
-            binding.artistTextView.setTextColor(errorColorSecondary)
+                binding.nextButton.isEnabled = true
+
+                mediaPlayerPrepared = false
+                mediaPlayerCurrentPosition = 0
+
+                myHandler.removeCallbacks(myRunnable)
+
+                true
+            }
+
+        } catch (e: Exception) {
+
+            binding.cardView.setAnimatedBackgroundColor(boxErrorColor, 300)
+
+            if (isValidContextForGlide(context)) {
+                Glide.with(context)
+                    .load(albumArtPlaceholder)
+                    .into(binding.albumArtImageView)
+            }
 
             binding.seekBar.isEnabled = false
-            binding.seekBar.max = 100
-            binding.seekBar.progress = 0
 
-            binding.playButton.isEnabled = false
+            binding.prevButton.isEnabled = true
+
+            binding.playButton.isEnabled = true
             binding.playButton.setImageResource(R.drawable.ic_round_play_arrow_24)
+            binding.playButton.setOnClickListener {
+                Toast.makeText(context, R.string.cannot_play_this_audio, Toast.LENGTH_SHORT).show()
+            }
 
-            val progress = makeTimeString(context, 0)
-            binding.currentProgressTextView.text = progress
+            binding.nextButton.isEnabled = true
 
-            val duration = makeTimeString(context, 0)
-            binding.maxDurationTextView.text = duration
+            mediaPlayerPrepared = false
+            mediaPlayerCurrentPosition = 0
 
-            true
+            myHandler.removeCallbacks(myRunnable)
         }
     }
 
@@ -770,7 +807,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         if (canStart) {
 
-            mediaPlayer!!.seekTo(currentPosition)
+            mediaPlayer!!.seekTo(mediaPlayerCurrentPosition)
             mediaPlayer!!.start()
 
             myHandler.post(myRunnable)
@@ -779,7 +816,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    fun pause() {
+    fun pause(resetPosition: Boolean = false) {
 
         if (mediaPlayer == null) {
             return
@@ -789,51 +826,29 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             return
         }
 
-        currentPosition = mediaPlayer!!.currentPosition
+        if (resetPosition) {
+            binding.seekBar.progress = 0
+            binding.currentProgressTextView.setText(R.string.zero_zero)
+        }
+
+        mediaPlayerCurrentPosition = if (resetPosition) 0 else mediaPlayer!!.currentPosition
         mediaPlayer!!.pause()
 
         myHandler.removeCallbacks(myRunnable)
-
-        binding.playButton.setImageResource(R.drawable.ic_round_play_arrow_24)
-    }
-
-    fun stop() {
-
-        if (mediaPlayer == null) {
-            return
-        }
-
-        if (!mediaPlayerPrepared) {
-            return
-        }
-
-        currentPosition = 0
-        mediaPlayer!!.pause()
-
-        myHandler.removeCallbacks(myRunnable)
-
-        binding.seekBar.max = mediaPlayer!!.duration
-        binding.seekBar.progress = 0
-
-        val progress = makeTimeString(context, 0)
-        binding.currentProgressTextView.text = progress
-
-        val duration = makeTimeString(context, mediaPlayer!!.duration.toLong())
-        binding.maxDurationTextView.text = duration
 
         binding.playButton.setImageResource(R.drawable.ic_round_play_arrow_24)
     }
 
     fun prev() {
 
-        if (sourceList.isEmpty()){
+        if (sourceList.isEmpty()) {
             return
         }
 
         index --
 
         if (index < 0) {
-            index = 0
+            index = sourceList.size - 1
         }
 
         prepare(index)
@@ -841,7 +856,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     fun next() {
 
-        if (sourceList.isEmpty()){
+        if (sourceList.isEmpty()) {
             return
         }
 
@@ -858,16 +873,15 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         sourceList.clear()
 
-        if (mediaPlayer != null) {
-            mediaPlayer!!.release()
-        }
-
+        mediaPlayer?.release()
         mediaPlayer = null
-
+        
         mediaPlayerPrepared = false
-        currentPosition = 0
+        mediaPlayerCurrentPosition = 0
 
         myHandler.removeCallbacks(myRunnable)
+        
+        binding.cardView.setAnimatedBackgroundColor(boxColor, 300)
 
         if (isValidContextForGlide(context)) {
             Glide.with(context)
@@ -875,16 +889,18 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
                 .into(binding.albumArtImageView)
         }
 
-        binding.rootCardView.setCardBackgroundColor(boxColor)
+        binding.titleTextView.setText(R.string.title)
+        binding.titleTextView.setAnimatedTextColor(titleTextColor, 300)
 
-        binding.titleTextView.text = context.getString(R.string.title)
-        binding.titleTextView.setTextColor(titleTextColor)
-        binding.artistTextView.text = context.getString(R.string.artist)
-        binding.artistTextView.setTextColor(artistTextColor)
+        binding.artistTextView.setText(R.string.artist)
+        binding.artistTextView.setAnimatedTextColor(artistTextColor, 300)
 
         binding.seekBar.isEnabled = false
         binding.seekBar.max = 100
         binding.seekBar.progress = 0
+        
+        binding.currentProgressTextView.setText(R.string.zero_zero)
+        binding.maxProgressTextView.setText(R.string.zero_zero)
 
         binding.prevButton.isEnabled = false
 
@@ -892,30 +908,24 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         binding.playButton.setImageResource(R.drawable.ic_round_play_arrow_24)
 
         binding.nextButton.isEnabled = false
-
-        val progress = makeTimeString(context, 0)
-        binding.currentProgressTextView.text = progress
-
-        val duration = makeTimeString(context, 0)
-        binding.maxDurationTextView.text = duration
     }
 
-    private fun handleBackground() {
+    private fun cardView() {
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(binding.root)
-        constraintSet.connect(binding.rootCardView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, boxMargin)
-        constraintSet.connect(binding.rootCardView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, boxMargin)
-        constraintSet.connect(binding.rootCardView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, boxMargin)
-        constraintSet.connect(binding.rootCardView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, boxMargin)
+        constraintSet.connect(binding.cardView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, boxPadding)
+        constraintSet.connect(binding.cardView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, boxPadding)
+        constraintSet.connect(binding.cardView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, boxPadding)
+        constraintSet.connect(binding.cardView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, boxPadding)
         constraintSet.applyTo(binding.root)
 
-        binding.rootCardView.radius = boxCornerRadius.toFloat()
-        binding.rootCardView.setCardBackgroundColor(boxColor)
-        binding.rootCardView.cardElevation = boxElevation.toFloat()
+        binding.cardView.radius = boxCornerRadius.toFloat()
+        binding.cardView.setCardBackgroundColor(boxColor)
+        binding.cardView.cardElevation = boxElevation.toFloat()
     }
 
-    private fun handleAlbumArtImageView() {
+    private fun albumArt() {
 
         binding.albumArtCardView.isVisible = albumArtIsVisible
 
@@ -930,9 +940,11 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.albumArtCardView.radius = albumArtBoxCornerRadius.toFloat()
         binding.albumArtCardView.cardElevation = albumArtBoxElevation.toFloat()
+
+        binding.albumArtImageView.scaleType = albumArtScaleType
     }
 
-    private fun handleTitleTextView() {
+    private fun titleTextView() {
 
         binding.titleTextView.isVisible = titleIsVisible
 
@@ -940,12 +952,14 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.titleTextView.setTextSize(textSizeUnit, titleTextSize.toFloat())
 
-        if (fontFamilyResId != -1) {
-            binding.titleTextView.typeface = ResourcesCompat.getFont(context, fontFamilyResId)
+        if (titleFontFamilyResId != -1) {
+            binding.titleTextView.typeface = ResourcesCompat.getFont(context, titleFontFamilyResId)
         }
+
+        binding.titleTextView.setTypeface(binding.titleTextView.typeface, titleTextStyle)
     }
 
-    private fun handleArtistTextView() {
+    private fun artistTextView() {
 
         binding.artistTextView.isVisible = artistIsVisible
 
@@ -953,12 +967,14 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.artistTextView.setTextSize(textSizeUnit, artistTextSize.toFloat())
 
-        if (fontFamilyResId != -1) {
-            binding.artistTextView.typeface = ResourcesCompat.getFont(context, fontFamilyResId)
+        if (artistFontFamilyResId != -1) {
+            binding.artistTextView.typeface = ResourcesCompat.getFont(context, artistFontFamilyResId)
         }
+
+        binding.artistTextView.setTypeface(binding.artistTextView.typeface, artistTextStyle)
     }
 
-    private fun handlePlayButton() {
+    private fun playButton() {
 
         binding.playButton.isVisible = playButtonIsVisible
 
@@ -987,7 +1003,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    private fun handleNextButton() {
+    private fun nextButton() {
 
         binding.nextButton.isVisible = nextButtonIsVisible
 
@@ -1015,7 +1031,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    private fun handlePrevButton() {
+    private fun prevButton() {
 
         binding.prevButton.isVisible = prevButtonIsVisible
 
@@ -1043,7 +1059,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    private fun handleSeekBar() {
+    private fun seekBar() {
 
         binding.seekBar.isVisible = seekBarIsVisible
 
@@ -1059,31 +1075,21 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         constraintSet.applyTo(binding.constraintLayout)
     }
 
-    private fun handleProgressTextView() {
+    private fun progressTextView() {
 
         binding.currentProgressTextView.setTextColor(progressTextColor)
-        binding.maxDurationTextView.setTextColor(progressTextColor)
-
         binding.currentProgressTextView.setTextSize(textSizeUnit, progressTextSize.toFloat())
-        binding.maxDurationTextView.setTextSize(textSizeUnit, progressTextSize.toFloat())
 
-        if (fontFamilyResId != -1) {
-            binding.currentProgressTextView.typeface = ResourcesCompat.getFont(context, fontFamilyResId)
-            binding.maxDurationTextView.typeface = ResourcesCompat.getFont(context, fontFamilyResId)
-        }
-    }
+        if (progressFontFamilyResId != -1)  binding.currentProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
 
-    private fun makeTimeString(context: Context, millis: Long): String {
+        binding.currentProgressTextView.setTypeface(binding.currentProgressTextView.typeface, progressTextStyle)
 
-        val hours = (millis / (1000 * 60 * 60)).toInt()
-        val minutes = (millis % (1000 * 60 * 60) / (1000 * 60)).toInt()
-        val seconds = (millis % (1000 * 60 * 60) % (1000 * 60) / 1000).toInt()
+        binding.maxProgressTextView.setTextSize(textSizeUnit, progressTextSize.toFloat())
+        binding.maxProgressTextView.setTextColor(progressTextColor)
 
-        return if (hours > 0) context.getString(R.string.hours_minutes_seconds, hours, minutes, seconds) else context.getString(R.string.minutes_seconds, minutes, seconds)
-    }
+        if (progressFontFamilyResId != -1) binding.maxProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
 
-    data class Audio(var data: String, var albumArt: Any?, var title: String, var artist: String) {
-        constructor(data: String) : this(data, null, "", "")
+        binding.maxProgressTextView.setTypeface(binding.maxProgressTextView.typeface, progressTextStyle)
     }
 
     private fun isValidContextForGlide(context: Context?): Boolean {
@@ -1106,4 +1112,87 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         return true
     }
+
+    private fun intToImageViewScaleType(i: Int): ImageView.ScaleType {
+
+        when (i) {
+
+            0 -> {
+                return ImageView.ScaleType.MATRIX
+            }
+
+            1 -> {
+                return ImageView.ScaleType.FIT_XY
+            }
+
+            2 -> {
+                return ImageView.ScaleType.FIT_START
+            }
+
+            3 -> {
+                return ImageView.ScaleType.FIT_CENTER
+            }
+
+            4 -> {
+                return ImageView.ScaleType.FIT_END
+            }
+
+            5 -> {
+                return ImageView.ScaleType.CENTER
+            }
+
+            6 -> {
+                return ImageView.ScaleType.CENTER_CROP
+            }
+
+            7 -> {
+                return ImageView.ScaleType.CENTER_INSIDE
+            }
+        }
+
+        return ImageView.ScaleType.FIT_CENTER
+    }
+
+    private fun imageViewScaleTypeToInt(scaleType: ImageView.ScaleType): Int {
+
+        when (scaleType) {
+
+            ImageView.ScaleType.MATRIX -> {
+                return 0
+            }
+
+            ImageView.ScaleType.FIT_XY -> {
+                return 1
+            }
+
+            ImageView.ScaleType.FIT_START -> {
+                return 2
+            }
+
+            ImageView.ScaleType.FIT_CENTER -> {
+                return 3
+            }
+
+            ImageView.ScaleType.FIT_END -> {
+                return 4
+            }
+
+            ImageView.ScaleType.CENTER -> {
+                return 5
+            }
+
+            ImageView.ScaleType.CENTER_CROP -> {
+                return 6
+            }
+
+            ImageView.ScaleType.CENTER_INSIDE -> {
+                return 7
+            }
+
+            else -> {
+                return 3
+            }
+        }
+    }
+
 }
