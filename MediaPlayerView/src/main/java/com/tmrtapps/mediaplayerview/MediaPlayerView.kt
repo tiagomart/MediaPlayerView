@@ -952,7 +952,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.titleTextView.setTextSize(textSizeUnit, titleTextSize.toFloat())
 
-        if (titleFontFamilyResId != -1) {
+        if (titleFontFamilyResId != -1 && !binding.titleTextView.isInEditMode) {
             binding.titleTextView.typeface = ResourcesCompat.getFont(context, titleFontFamilyResId)
         }
 
@@ -967,7 +967,7 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.artistTextView.setTextSize(textSizeUnit, artistTextSize.toFloat())
 
-        if (artistFontFamilyResId != -1) {
+        if (artistFontFamilyResId != -1 && !binding.artistTextView.isInEditMode) {
             binding.artistTextView.typeface = ResourcesCompat.getFont(context, artistFontFamilyResId)
         }
 
@@ -1080,14 +1080,14 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         binding.currentProgressTextView.setTextColor(progressTextColor)
         binding.currentProgressTextView.setTextSize(textSizeUnit, progressTextSize.toFloat())
 
-        if (progressFontFamilyResId != -1)  binding.currentProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
+        if (progressFontFamilyResId != -1 && !binding.currentProgressTextView.isInEditMode)  binding.currentProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
 
         binding.currentProgressTextView.setTypeface(binding.currentProgressTextView.typeface, progressTextStyle)
 
         binding.maxProgressTextView.setTextSize(textSizeUnit, progressTextSize.toFloat())
         binding.maxProgressTextView.setTextColor(progressTextColor)
 
-        if (progressFontFamilyResId != -1) binding.maxProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
+        if (progressFontFamilyResId != -1 && !binding.maxProgressTextView.isInEditMode) binding.maxProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
 
         binding.maxProgressTextView.setTypeface(binding.maxProgressTextView.typeface, progressTextStyle)
     }
@@ -1194,5 +1194,4 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
             }
         }
     }
-
 }
