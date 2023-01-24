@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -952,8 +953,14 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.titleTextView.setTextSize(textSizeUnit, titleTextSize.toFloat())
 
-        if (titleFontFamilyResId != -1 && !binding.titleTextView.isInEditMode) {
-            binding.titleTextView.typeface = ResourcesCompat.getFont(context, titleFontFamilyResId)
+        if (!binding.currentProgressTextView.isInEditMode) {
+            if (progressFontFamilyResId != -1) {
+                try {
+                    binding.titleTextView.typeface = ResourcesCompat.getFont(context, titleFontFamilyResId)
+                } catch (e: Exception) {
+                    Log.e(MediaPlayerView::class.java.simpleName, "Unable to load selected font: " + e.message.toString())
+                }
+            }
         }
 
         binding.titleTextView.setTypeface(binding.titleTextView.typeface, titleTextStyle)
@@ -967,8 +974,14 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         binding.artistTextView.setTextSize(textSizeUnit, artistTextSize.toFloat())
 
-        if (artistFontFamilyResId != -1 && !binding.artistTextView.isInEditMode) {
-            binding.artistTextView.typeface = ResourcesCompat.getFont(context, artistFontFamilyResId)
+        if (!binding.currentProgressTextView.isInEditMode) {
+            if (progressFontFamilyResId != -1) {
+                try {
+                    binding.artistTextView.typeface = ResourcesCompat.getFont(context, artistFontFamilyResId)
+                } catch (e: Exception) {
+                    Log.e(MediaPlayerView::class.java.simpleName, "Unable to load selected font: " + e.message.toString())
+                }
+            }
         }
 
         binding.artistTextView.setTypeface(binding.artistTextView.typeface, artistTextStyle)
@@ -1080,7 +1093,15 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         binding.currentProgressTextView.setTextColor(progressTextColor)
         binding.currentProgressTextView.setTextSize(textSizeUnit, progressTextSize.toFloat())
 
-        if (progressFontFamilyResId != -1 && !binding.currentProgressTextView.isInEditMode)  binding.currentProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
+        if (!binding.currentProgressTextView.isInEditMode) {
+            if (progressFontFamilyResId != -1) {
+                try {
+                    binding.currentProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
+                } catch (e: Exception) {
+                    Log.e(MediaPlayerView::class.java.simpleName, "Unable to load selected font: " + e.message.toString())
+                }
+            }
+        }
 
         binding.currentProgressTextView.setTypeface(binding.currentProgressTextView.typeface, progressTextStyle)
 
