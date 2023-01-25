@@ -1108,7 +1108,15 @@ class MediaPlayerView @JvmOverloads constructor(context: Context, attrs: Attribu
         binding.maxProgressTextView.setTextSize(textSizeUnit, progressTextSize.toFloat())
         binding.maxProgressTextView.setTextColor(progressTextColor)
 
-        if (progressFontFamilyResId != -1 && !binding.maxProgressTextView.isInEditMode) binding.maxProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
+        if (!binding.currentProgressTextView.isInEditMode) {
+            if (progressFontFamilyResId != -1) {
+                try {
+                    binding.maxProgressTextView.typeface = ResourcesCompat.getFont(context, progressFontFamilyResId)
+                } catch (e: Exception) {
+                    Log.e(MediaPlayerView::class.java.simpleName, "Unable to load selected font: " + e.message.toString())
+                }
+            }
+        }
 
         binding.maxProgressTextView.setTypeface(binding.maxProgressTextView.typeface, progressTextStyle)
     }
